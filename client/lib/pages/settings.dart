@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                         children: [
                                           TextSpan(
                                             text:
-                                                '${state.profileUserModel!.displayName}\n',
+                                                '${state.profileUserModel?.displayName ?? 'User'}\n',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 20,
@@ -94,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           ),
                                           TextSpan(
                                             text:
-                                                '${state.profileUserModel!.userName}',
+                                                '${state.profileUserModel?.userName ?? '@user'}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -129,7 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 GestureDetector(
                     onTap: () {
                       Share.share(
-                        "rebe.al/${state.profileUserModel!.userName!.replaceAll("@", "").toLowerCase()}",
+                        "rebe.al/${state.profileUserModel?.userName?.replaceAll("@", "").toLowerCase() ?? 'user'}",
                         subject: "Add me on ReBeal.",
                         sharePositionOrigin: Rect.fromLTWH(0, 0, 10, 10),
                       );
@@ -209,7 +209,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Text(
                   "You join BeReal on a few days ago" +
                       Utility.getdob(
-                          state.profileUserModel!.createAt.toString()),
+                          state.profileUserModel?.createAt.toString() ?? 'Unknown'),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,

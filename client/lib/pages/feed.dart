@@ -4,9 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rebeal/camera/camera.dart';
 import 'package:rebeal/model/user.module.dart';
+import 'package:rebeal/pages/home.dart';
+import 'package:rebeal/pages/myprofile.dart';
 import 'package:rebeal/state/auth.state.dart';
 import 'package:rebeal/state/search.state.dart';
+import 'package:rebeal/widget/bottom_navigation.dart';
 import 'package:rebeal/widget/list.dart';
 import 'package:rebeal/widget/share.dart';
 import '../styles/color.dart';
@@ -42,23 +46,53 @@ class _FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
 
   final _textController = TextEditingController();
   int currentIndex = 0;
+  
+  void _onNavTap(int index) {
+    HapticFeedback.mediumImpact();
+    switch (index) {
+      case 0: // Home
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+        break;
+      case 1: // Friends - already here, do nothing
+        break;
+      case 2: // Camera
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraPage()),
+        );
+        break;
+      case 3: // Chat - placeholder
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Chat coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+      case 4: // Profile
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyProfilePage()),
+        );
+        break;
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     var authState = Provider.of<AuthState>(context, listen: false);
     final state = Provider.of<SearchState>(context);
     final list = state.userlist;
-    final Map<int, Widget> children = {
-      0: Text('Suggest'),
-      1: Text('Friends'),
-      2: Text('Ask'),
-    };
     List<UserModel>? following;
     List<UserModel>? follower;
 
     List<String>? followingkey =
-        authState.profileUserModel!.followingList?.toList();
+        authState.profileUserModel?.followingList?.toList();
     List<String>? followerkey =
-        authState.profileUserModel!.followersList?.toList();
+        authState.profileUserModel?.followersList?.toList();
 
     if (followingkey != null) {
       following = state.getuserDetail(followingkey);
@@ -68,25 +102,10 @@ class _FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
     }
     return Scaffold(
         extendBody: true,
-        bottomNavigationBar: Padding(
-            padding: EdgeInsets.only(bottom: 50, left: 20, right: 20),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CupertinoSlidingSegmentedControl(
-                  backgroundColor: ReBealColor.ReBealDarkGrey,
-                  thumbColor: Color.fromARGB(255, 60, 60, 60),
-                  padding:
-                      EdgeInsets.only(bottom: 10, top: 10, right: 10, left: 10),
-                  children: children,
-                  groupValue: currentIndex,
-                  onValueChanged: (newValue) {
-                    HapticFeedback.mediumImpact();
-                    setState(() {
-                      currentIndex = newValue!;
-                      _tabController.animateTo(currentIndex);
-                    });
-                  },
-                ))),
+        bottomNavigationBar: GlassmorphicBottomNav(
+          currentIndex: 1, // Friends page
+          onTap: _onNavTap,
+        ),
         backgroundColor: Colors.black,
         appBar: AppBar(
           toolbarHeight: 100,

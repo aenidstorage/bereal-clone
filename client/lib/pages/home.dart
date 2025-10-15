@@ -10,12 +10,10 @@ import 'package:rebeal/model/user.module.dart';
 import 'package:rebeal/state/auth.state.dart';
 import 'package:rebeal/state/post.state.dart';
 import 'package:rebeal/state/search.state.dart';
-import 'package:rebeal/styles/color.dart';
 import 'package:rebeal/pages/myprofile.dart';
 import 'package:rebeal/widget/feedpost.dart';
 import 'package:rebeal/widget/gridpost.dart';
-import 'package:rebeal/widget/list.dart';
-import '../widget/custom/rippleButton.dart';
+import 'package:rebeal/widget/bottom_navigation.dart';
 import 'feed.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,11 +23,10 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  late TabController _tabController;
+class _HomePageState extends State<HomePage> {
   ScrollController _scrollController = ScrollController();
-  bool _isScrolledDown = false;
   bool _isGrid = false;
+  int _currentNavIndex = 0;
 
   @override
   void initState() {
@@ -41,7 +38,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       initProfile();
     });
     _scrollController.addListener(_scrollListener);
-    _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -49,7 +45,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -70,17 +65,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.userScrollDirection ==
-        ScrollDirection.reverse) {
-      setState(() {
-        _isScrolledDown = true;
-      });
-    } else if (_scrollController.position.userScrollDirection ==
-        ScrollDirection.forward) {
-      setState(() {
-        _isScrolledDown = false;
-      });
-    }
+    // Can be used for scroll-based UI updates if needed
   }
 
   Future _bodyView() async {
@@ -95,58 +80,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  int tab = 0;
+  void _onNavTap(int index) {
+    HapticFeedback.mediumImpact();
+    switch (index) {
+      case 0: // Home - already here, do nothing
+        break;
+      case 1: // Friends
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FeedPage()),
+        );
+        break;
+      case 2: // Camera
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraPage()),
+        );
+        break;
+      case 3: // Chat - placeholder
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Chat coming soon!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+        break;
+      case 4: // Profile
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyProfilePage()),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var authState = Provider.of<AuthState>(context, listen: false);
-    final state = Provider.of<SearchState>(context);
 
     return Scaffold(
         extendBody: true,
-        bottomNavigationBar: AnimatedOpacity(
-            opacity: tab == 1 ? 0 : 1,
-            duration: Duration(milliseconds: 301),
-            child: Container(
-                height: 150,
-                color: Colors.transparent,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraPage()));
-                        },
-                        child: Container(
-                            height: 80,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white, width: 6),
-                              shape: BoxShape.circle,
-                            ))),
-                    Container(
-                      height: 40,
-                    ),
-                  ],
-                ))),
+        bottomNavigationBar: GlassmorphicBottomNav(
+          currentIndex: _currentNavIndex,
+          onTap: _onNavTap,
+        ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
         appBar: AppBar(
-          leading: GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const FeedPage()));
-            },
-            child: Transform(
-                transform: Matrix4.identity()..scale(-1.0, 1.0, -1.0),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.people,
-                  size: 30,
-                )),
-          ),
+          leading: Container(), // Empty - no longer need friends icon
           toolbarHeight: 37,
           flexibleSpace: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -171,60 +152,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         .profileUserModel?.profilePic ??
                                     "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg")))),
               )
-            ],
-          ),
-          bottom: _isScrolledDown && tab != 1 || _isGrid
-              ? null
-              : TabBar(
-                  onTap: (index) {
-                    setState(() {
-                      tab = index;
-                    });
-                    HapticFeedback.mediumImpact();
-                  },
-                  controller: _tabController,
-                  isScrollable: false,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: ReBealColor.ReBealLightGrey,
-                  indicatorColor: Colors.transparent,
-                  indicatorWeight: 1,
-                  tabs: [
-                    FadeInUp(
-                        child: Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Tab(
-                              child: Text(
-                                'My Friends',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ))),
-                    FadeInUp(
-                        child: Padding(
-                      padding: EdgeInsets.only(right: 0),
-                      child: Tab(
-                          child: Text(
-                        'Friends',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )),
-                    )),
-                    FadeInUp(
-                        child: Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Tab(
-                          child: Text(
-                        'Discovery',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )),
-                    )),
                   ],
                 ),
           elevation: 0,
@@ -239,11 +166,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 opacity: 1,
                 duration: Duration(milliseconds: 500),
                 child: _isGrid
-                    ? TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _tabController,
-                        children: [
-                            Consumer<PostState>(
+                    ? Consumer<PostState>(
                                 builder: (context, state, child) {
                               final now = DateTime.now();
                               final List<PostModel>? list = state
@@ -292,13 +215,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 return GridPostWidget(
                                                     postModel: list[index]);
                                               }))));
-                            }),
-                          ])
-                    : TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _tabController,
-                        children: [
-                            Consumer<PostState>(
+                        })
+                    : Consumer<PostState>(
                                 builder: (context, state, child) {
                               final List<PostModel>? list =
                                   state.getPostList(authState.userModel);
@@ -321,128 +239,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               postModel: list![index],
                                             );
                                           })));
-                            }),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: 140,
-                                ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.1,
-                                  decoration: BoxDecoration(
-                                      color: ReBealColor.ReBealDarkGrey,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  alignment: Alignment.topCenter,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 20, left: 10),
-                                          child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              child: Container(
-                                                height: 25,
-                                                width: 40,
-                                                color: Colors.white,
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  "NEW",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w800),
-                                                ),
-                                              ))),
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 10, left: 10),
-                                          child: Text(
-                                            "DISCOVER YOU'RE\nFRIENDS OF FRIENDS",
-                                            style: TextStyle(
-                                                fontSize: 28,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700),
-                                          )),
-                                      Container(
-                                          height: 300,
-                                          child: ListView.builder(
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                  height: 60,
-                                                  child: UserTilePage(
-                                                    user:
-                                                        state.userlist![index],
-                                                    isadded: true,
-                                                  ));
-                                            },
-                                            itemCount: 2,
-                                          )),
-                                      Padding(
-                                          padding: EdgeInsets.only(
-                                            left: 15,
-                                            bottom: 20,
-                                            right: 15,
-                                          ),
-                                          child: RippleButton(
-                                              splashColor: Colors.transparent,
-                                              child: Container(
-                                                  height: 55,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
-                                                      40,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                  ),
-                                                  child: Center(
-                                                      child: Text(
-                                                    "Share ReBeal in order to discover",
-                                                    style: TextStyle(
-                                                        fontFamily: "icons.ttf",
-                                                        color: Colors.black,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w600),
-                                                  ))),
-                                              onPressed: () {})),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Consumer<PostState>(
-                                builder: (context, state, child) {
-                              final now = DateTime.now();
-                              final List<PostModel>? list = state
-                                  .getPostLists(authState.userModel)!
-                                  .where((x) =>
-                                      now
-                                          .difference(
-                                              DateTime.parse(x.createdAt))
-                                          .inHours <
-                                      24)
-                                  .toList();
-                              return ListView.builder(
-                                  controller: _scrollController,
-                                  itemCount: list?.length ?? 0,
-                                  itemBuilder: (context, index) {
-                                    return FeedPostWidget(
-                                      postModel: list![index],
-                                    );
-                                  });
-                            }),
-                          ]))));
+                        }))));
   }
 }

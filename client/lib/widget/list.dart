@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rebeal/model/user.module.dart';
 import 'package:rebeal/pages/profile.dart';
+import 'package:rebeal/state/profile.state.dart';
 import 'package:rebeal/styles/color.dart';
 import 'package:rebeal/widget/custom/title_text.dart';
 
@@ -59,20 +61,29 @@ class UserTilePage extends StatelessWidget {
                 children: [
                   isadded!
                       ? Container()
-                      : Container(
-                          height: 30,
-                          width: 90,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(221, 69, 69, 69),
-                            borderRadius: BorderRadius.circular(90),
-                          ),
-                          child: Text(
-                            "ADD",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
+                      : GestureDetector(
+                          onTap: () {
+                            // Navigate to profile page where user can add friend
+                            Navigator.push(
+                              context,
+                              ProfilePage.getRoute(profileId: user.userId!),
+                            );
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 90,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(221, 69, 69, 69),
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                            child: Text(
+                              "ADD",
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
                         ),

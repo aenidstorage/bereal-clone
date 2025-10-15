@@ -51,19 +51,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
     ImagePicker()
         .pickImage(source: source, imageQuality: 100)
         .then((XFile? file) async {
-      await ImageCropper.platform.cropImage(
+      await ImageCropper().cropImage(
         sourcePath: file!.path,
-        cropStyle: CropStyle.circle,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false,
+          ),
+          IOSUiSettings(
+            title: 'Crop Image',
+          ),
+          WebUiSettings(
+            context: context,
+          ),
         ],
-      ).then((value) => setState(() {
-            onImageSelected(File(value!.path));
-          }));
+      ).then((value) {
+        if (value != null) {
+          setState(() {
+            onImageSelected(File(value.path));
+          });
+        }
+      });
     });
   }
 

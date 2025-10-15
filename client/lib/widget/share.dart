@@ -32,7 +32,7 @@ class _ShareButtonState extends State<ShareButton> {
             child: GestureDetector(
                 onTap: () {
                   shareText(
-                      "rebe.al/${state.profileUserModel!.userName!.replaceAll("@", "").toLowerCase()}");
+                      "rebe.al/${state.profileUserModel?.userName?.replaceAll("@", "").toLowerCase() ?? 'user'}");
                 },
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -74,7 +74,7 @@ class _ShareButtonState extends State<ShareButton> {
                                     ),
                                     TextSpan(
                                       text:
-                                          'rebe.al/${state.profileUserModel!.userName!.replaceAll("@", "").toLowerCase()}',
+                                          'rebe.al/${state.profileUserModel?.userName?.replaceAll("@", "").toLowerCase() ?? 'user'}',
                                       style: TextStyle(
                                         color: ReBealColor.ReBealLightGrey,
                                         fontSize: 14,

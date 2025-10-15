@@ -201,10 +201,10 @@ class _SignupState extends State<Signup> {
       print(status);
     }).whenComplete(
       () {
-        Future.delayed(const Duration(seconds: 0)).then((_) {
+        Future.delayed(const Duration(seconds: 0)).then((_) async {
           var state = Provider.of<AuthState>(context, listen: false);
 
-          state.getCurrentUser();
+          await state.getCurrentUser();
           Navigator.push(
             context,
             AwesomePageRoute(

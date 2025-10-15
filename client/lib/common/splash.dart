@@ -4,7 +4,6 @@ import 'package:rebeal/auth/name.dart';
 import 'package:rebeal/helper/enum.dart';
 import 'package:rebeal/state/auth.state.dart';
 import 'package:rebeal/pages/home.dart';
-import 'package:rebeal/state/profile.state.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,9 +25,12 @@ class _SplashPageState extends State<SplashPage> {
 
   void timer() async {
     if (isAppUpdated) {
-      Future.delayed(const Duration(seconds: 1)).then((_) {
+      Future.delayed(const Duration(seconds: 1)).then((_) async {
         var state = Provider.of<AuthState>(context, listen: false);
-        state.getCurrentUser();
+        await state.getCurrentUser();
+        if (mounted) {
+          setState(() {}); // Trigger rebuild after auth check
+        }
       });
     }
   }
@@ -36,6 +38,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<AuthState>(context);
+    print('SplashPage: authStatus = ${state.authStatus}');
     return Scaffold(
       backgroundColor: Colors.black,
       body: state.authStatus == AuthStatus.NOT_LOGGED_IN

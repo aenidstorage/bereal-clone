@@ -39,7 +39,7 @@ class _NotificationState extends State<NotifcationTest> {
               height: 30,
             ),
             Text(
-              "\n${state.profileUserModel!.displayName}, we know you can do it!\nTap the\nnotification to get your first ReBeal.",
+              "\n${state.profileUserModel?.displayName ?? 'User'}, we know you can do it!\nTap the\nnotification to get your first ReBeal.",
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 40,
@@ -93,7 +93,7 @@ class _NotificationState extends State<NotifcationTest> {
                                     fontWeight: FontWeight.w800),
                               ))),
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(
+                            Navigator.pushReplacement(context, MaterialPageRoute(
                               builder: (context) {
                                 return SplashPage();
                               },

@@ -1,6 +1,7 @@
 import 'dart:io' as d;
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:rebeal/common/locator.dart';
 import 'package:rebeal/common/splash.dart';
@@ -15,20 +16,18 @@ List<CameraDescription> cameras = [];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  if (d.Platform.isIOS)
-    Firebase.initializeApp();
-  else
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "",
-            authDomain: "",
-            databaseURL: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: "",
-            measurementId: ""));
+  
+  // Try to get cameras, but don't crash if it fails (e.g., on web)
+  try {
+    cameras = await availableCameras();
+  } catch (e) {
+    print('Camera initialization failed: $e');
+    cameras = [];
+  }
+  
+  // Initialize Firebase
+  await Firebase.initializeApp();
+  
   setupDependencies();
   final sharedPreferences = await SharedPreferences.getInstance();
   runApp(MyApp(

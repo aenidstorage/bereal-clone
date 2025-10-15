@@ -28,7 +28,7 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   CameraController? _controller;
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref();
   final FirebaseStorage _storage = FirebaseStorage.instance;
   int _cameraIndex = -1;
   double zoomLevel = 0.0, minZoomLevel = 0.0, maxZoomLevel = 0.0;
@@ -71,7 +71,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // _stopLiveFeed();
+    _stopLiveFeed();
     super.dispose();
   }
 
@@ -266,7 +266,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
     final camera = cameras[_cameraIndex];
     _controller = CameraController(
       camera,
-      ResolutionPreset.high,
+      ResolutionPreset.low,
       enableAudio: false,
       imageFormatGroup: Platform.isAndroid
           ? ImageFormatGroup.nv21
@@ -304,10 +304,10 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
     }).then((bpath) {
       uploadImageToStorage(File(bpath.path)).then((path) {
         UserModel user = UserModel(
-          displayName: state.profileUserModel!.displayName ?? "",
-          profilePic: state.profileUserModel!.profilePic,
-          userId: state.profileUserModel!.userId,
-          localisation: state.profileUserModel!.localisation,
+          displayName: state.profileUserModel?.displayName ?? "",
+          profilePic: state.profileUserModel?.profilePic,
+          userId: state.profileUserModel?.userId,
+          localisation: state.profileUserModel?.localisation,
         );
         PostModel post = PostModel(
           user: user,
@@ -322,6 +322,7 @@ class _CameraPageState extends State<CameraPage> with TickerProviderStateMixin {
   }
 
   Future _stopLiveFeed() async {
+    await _controller?.dispose();
     _controller = null;
   }
 

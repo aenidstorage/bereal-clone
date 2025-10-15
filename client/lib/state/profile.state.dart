@@ -17,8 +17,8 @@ class ProfileState extends ChangeNotifier {
 
   late String userId;
 
-  late UserModel _userModel;
-  UserModel get userModel => _userModel;
+  UserModel? _userModel;
+  UserModel? get userModel => _userModel;
 
   dabase.Query? _profileQuery;
   late StreamSubscription<DatabaseEvent> profileSubscription;
@@ -81,43 +81,53 @@ class ProfileState extends ChangeNotifier {
 
   followUser({bool removeFollower = false}) {
     try {
+      // Check if userModel is loaded
+      if (userModel == null) {
+        print('User model not loaded yet');
+        return;
+      }
+      
       if (removeFollower) {
-        profileUserModel.followersList!.remove(userModel.userId);
-        userModel.followingList!.remove(profileUserModel.userId);
+        profileUserModel.followersList?.remove(userModel!.userId);
+        userModel!.followingList?.remove(profileUserModel.userId);
       } else {
         profileUserModel.followersList ??= [];
-        profileUserModel.followersList!.add(userModel.userId!);
-        userModel.followingList ??= [];
+        profileUserModel.followersList!.add(userModel!.userId!);
+        userModel!.followingList ??= [];
         addFollowNotification();
-        userModel.followingList!.add(profileUserModel.userId!);
+        userModel!.followingList!.add(profileUserModel.userId!);
       }
       kDatabase
           .child('profile')
           .child(profileUserModel.userId!)
           .child('followerList')
-          .set({"key:": userModel.followingList, "accept": false});
+          .set({"key:": userModel!.followingList, "accept": false});
       kDatabase
           .child('profile')
-          .child(userModel.userId!)
+          .child(userModel!.userId!)
           .child('followingList')
-          .set({userModel.followingList, false});
+          .set({userModel!.followingList, false});
 
       notifyListeners();
-    } catch (error) {}
+    } catch (error) {
+      print('Error in followUser: $error');
+    }
   }
 
   void addFollowNotification() {
+    if (userModel == null) return;
+    
     kDatabase.child('notification').child(profileId).child(userId).set({
       'type': NotificationType.Follow.toString(),
       'createdAt': DateTime.now().toUtc().toString(),
       'data': UserModel(
-              displayName: userModel.displayName,
-              profilePic: userModel.profilePic,
-              userId: userModel.userId,
-              bio: userModel.bio == "Edit profile to update bio"
+              displayName: userModel!.displayName,
+              profilePic: userModel!.profilePic,
+              userId: userModel!.userId,
+              bio: userModel!.bio == "Edit profile to update bio"
                   ? ""
-                  : userModel.bio,
-              userName: userModel.userName)
+                  : userModel!.bio,
+              userName: userModel!.userName)
           .toJson()
     });
   }

@@ -217,8 +217,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           onStretchTrigger: () {
                             return Future<void>.value();
                           },
-                          title: Text(authstate.userModel.userName!
-                              .replaceAll("@", "")),
+                          title: Text(authstate.userModel?.userName
+                              ?.replaceAll("@", "") ?? ""),
                           backgroundColor: Colors.black.withOpacity(0),
                           expandedHeight:
                               MediaQuery.of(context).size.height / 2.2,
@@ -284,8 +284,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         GestureDetector(
                                             onTap: () {
                                               _shareText(authstate
-                                                  .userModel.userName!
-                                                  .replaceAll("@", ""));
+                                                  .userModel?.userName
+                                                  ?.replaceAll("@", "") ?? "");
                                             },
                                             child: Container(
                                                 height: 35,
