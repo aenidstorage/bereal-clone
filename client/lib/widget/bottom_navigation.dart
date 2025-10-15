@@ -23,10 +23,10 @@ class GlassmorphicBottomNav extends StatelessWidget {
           child: Container(
             height: 70,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(50),
               border: Border.all(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 width: 1,
               ),
             ),
@@ -80,14 +80,14 @@ class GlassmorphicBottomNav extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
+              color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
               size: isActive ? 26 : 24,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: isActive ? Colors.white : Colors.white.withOpacity(0.5),
+                color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
                 fontSize: 11,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),

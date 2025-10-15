@@ -48,7 +48,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SearchState>(create: (_) => SearchState()),
       ],
       child: MaterialApp(
-          theme: ThemeData(brightness: Brightness.dark),
+          theme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: const Color(0xFFB65B86), // Fallback color
+          ),
           title: 'ReBeal.',
           debugShowCheckedModeBanner: false,
           home: SplashPage()),

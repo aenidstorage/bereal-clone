@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,7 @@ import 'package:rebeal/pages/myprofile.dart';
 import 'package:rebeal/widget/feedpost.dart';
 import 'package:rebeal/widget/gridpost.dart';
 import 'package:rebeal/widget/bottom_navigation.dart';
+import 'package:rebeal/widget/gradient_background.dart';
 import 'feed.dart';
 
 class HomePage extends StatefulWidget {
@@ -124,44 +124,8 @@ class _HomePageState extends State<HomePage> {
           currentIndex: _currentNavIndex,
           onTap: _onNavTap,
         ),
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          leading: Container(), // Empty - no longer need friends icon
-          toolbarHeight: 37,
-          flexibleSpace: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10, top: 59),
-                child: GestureDetector(
-                    onTap: () {
-                      HapticFeedback.mediumImpact();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MyProfilePage()));
-                    },
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Container(
-                            height: 30,
-                            width: 30,
-                            child: CachedNetworkImage(
-                                imageUrl: authState
-                                        .profileUserModel?.profilePic ??
-                                    "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg")))),
-              )
-                  ],
-                ),
-          elevation: 0,
-          title: Image.asset(
-            "assets/logo/logo.png",
-            height: 100,
-          ),
-          backgroundColor: Colors.transparent,
-        ),
-        body: FadeIn(
+        body: GradientBackground(
+          child: FadeIn(
             child: AnimatedOpacity(
                 opacity: 1,
                 duration: Duration(milliseconds: 500),
@@ -239,6 +203,8 @@ class _HomePageState extends State<HomePage> {
                                               postModel: list![index],
                                             );
                                           })));
-                        }))));
+                        }))),
+          ),
+        );
   }
 }

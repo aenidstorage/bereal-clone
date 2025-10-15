@@ -4,6 +4,7 @@ import 'package:rebeal/auth/name.dart';
 import 'package:rebeal/helper/enum.dart';
 import 'package:rebeal/state/auth.state.dart';
 import 'package:rebeal/pages/home.dart';
+import 'package:rebeal/widget/gradient_background.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -40,10 +41,11 @@ class _SplashPageState extends State<SplashPage> {
     var state = Provider.of<AuthState>(context);
     print('SplashPage: authStatus = ${state.authStatus}');
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: state.authStatus == AuthStatus.NOT_LOGGED_IN
-          ? const NamePage()
-          : const HomePage(),
+      body: GradientBackground(
+        child: state.authStatus == AuthStatus.NOT_LOGGED_IN
+            ? const NamePage()
+            : const HomePage(),
+      ),
     );
   }
 }

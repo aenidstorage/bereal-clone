@@ -11,6 +11,7 @@ import 'package:rebeal/state/auth.state.dart';
 import 'package:rebeal/pages/settings.dart';
 import 'package:rebeal/widget/bottom_navigation.dart';
 import 'package:rebeal/widget/gridpost.dart';
+import 'package:rebeal/widget/gradient_background.dart';
 import '../styles/color.dart';
 import 'edit.dart';
 import 'feed.dart';
@@ -147,7 +148,6 @@ class _ProfilePageState extends State<MyProfilePage> {
           onTap: _onNavTap,
         ),
         extendBodyBehindAppBar: true,
-        backgroundColor: Colors.black,
         appBar: AppBar(
             actions: [
               FadeIn(
@@ -176,9 +176,10 @@ class _ProfilePageState extends State<MyProfilePage> {
                   "Profile",
                   style: TextStyle(color: Colors.white),
                 ))),
-        body: Center(
+        body: GradientBackground(
+          child: Center(
             child: FadeInDown(
-                child: ListView(
+              child: ListView(
           children: [
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -295,6 +296,10 @@ class _ProfilePageState extends State<MyProfilePage> {
                   ],
                 ))
           ],
-        ))));
+        ),
+              ),
+            ),
+          ),
+        );
   }
 }
