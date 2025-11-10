@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rebeal/camera/camera.dart';
+import 'package:rebeal/pages/new_post.dart';
 import 'package:rebeal/model/user.module.dart';
 import 'package:rebeal/pages/home.dart';
 import 'package:rebeal/pages/myprofile.dart';
@@ -58,10 +58,10 @@ class _FeedPageState extends State<FeedPage> with TickerProviderStateMixin {
         break;
       case 1: // Friends - already here, do nothing
         break;
-      case 2: // Camera
+      case 2: // New Post
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CameraPage()),
+          MaterialPageRoute(builder: (context) => const NewPostPage()),
         );
         break;
       case 3: // Chat - placeholder

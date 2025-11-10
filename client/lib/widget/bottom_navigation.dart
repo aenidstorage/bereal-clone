@@ -112,7 +112,7 @@ class GlassmorphicBottomNav extends StatelessWidget {
           border: Border.all(color: Colors.white, width: 3),
         ),
         child: const Icon(
-          Icons.camera_alt_rounded,
+          Icons.add_box_rounded,
           color: Colors.white,
           size: 28,
         ),

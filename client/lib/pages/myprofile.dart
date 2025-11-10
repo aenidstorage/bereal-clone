@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rebeal/camera/camera.dart';
+import 'package:rebeal/pages/new_post.dart';
 import 'package:rebeal/model/post.module.dart';
 import 'package:rebeal/model/user.module.dart';
 import 'package:rebeal/pages/home.dart';
@@ -118,10 +118,10 @@ class _ProfilePageState extends State<MyProfilePage> {
           MaterialPageRoute(builder: (context) => const FeedPage()),
         );
         break;
-      case 2: // Camera
+      case 2: // New Post
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CameraPage()),
+          MaterialPageRoute(builder: (context) => const NewPostPage()),
         );
         break;
       case 3: // Chat - placeholder

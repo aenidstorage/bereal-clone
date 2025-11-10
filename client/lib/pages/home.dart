@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rebeal/camera/camera.dart';
+import 'package:rebeal/pages/new_post.dart';
 import 'package:rebeal/model/post.module.dart';
 import 'package:rebeal/model/user.module.dart';
 import 'package:rebeal/state/auth.state.dart';
@@ -91,10 +91,10 @@ class _HomePageState extends State<HomePage> {
           MaterialPageRoute(builder: (context) => const FeedPage()),
         );
         break;
-      case 2: // Camera
+      case 2: // New Post
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CameraPage()),
+          MaterialPageRoute(builder: (context) => const NewPostPage()),
         );
         break;
       case 3: // Chat - placeholder
